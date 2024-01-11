@@ -15,10 +15,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Memeriksa apakah username ditemukan
         if (mysqli_num_rows($result) == 1) {
             $user = mysqli_fetch_assoc($result);
-    
+
             // Memeriksa apakah kata sandi cocok
-            if ($password === $user['password']) {
-                // Login berhasil, redirect ke halaman sukses atau halaman beranda
+            if (password_verify($password, $user['password'])) {
+                // Start a session
+                session_start();
+
+                // Set session variables
+                $_SESSION['username'] = $username;
+
+                // Redirect to the Home.php page
                 header("Location: Home.php");
                 exit();
             } else {
@@ -29,14 +35,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Username tidak ditemukan
             echo "Username tidak ditemukan. Silakan coba lagi.";
         }
-    
+
         // Membebaskan hasil query
         mysqli_free_result($result);
     } else {
         // Error saat menjalankan query
         echo "Error: " . mysqli_error($koneksi);
     }
-    
 
     // Menutup koneksi database
     mysqli_close($koneksi);
