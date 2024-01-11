@@ -4,14 +4,17 @@ include 'koneksi.php';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Mengambil nilai input dari formulir
     $username = $_POST['username'];
-    $password = $_POST['password'];
+    $raw_password = $_POST['password'];
+
+    // Menggunakan password_hash untuk menghasilkan hash dari password
+    $hashed_password = password_hash($raw_password, PASSWORD_DEFAULT);
 
     // Melakukan query untuk menyimpan informasi pengguna ke dalam database
     $query = "INSERT INTO admins (name, password) VALUES (?, ?)";
     $stmt = mysqli_prepare($koneksi, $query);
 
     if ($stmt) {
-        mysqli_stmt_bind_param($stmt, 'ss', $username, $password);
+        mysqli_stmt_bind_param($stmt, 'ss', $username, $hashed_password);
 
         if (mysqli_stmt_execute($stmt)) {
             // Registrasi berhasil, redirect ke halaman login atau halaman beranda
