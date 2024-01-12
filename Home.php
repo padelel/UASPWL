@@ -86,6 +86,15 @@ $username = $_SESSION['username'];
                 </a>
             </li>
 
+            <!-- Nav Item - Transactions -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="Transaksi.php" data-target="#collapseTransactions"
+                    aria-expanded="true" aria-controls="collapseTransactions">
+                    <i class="fas fa-money-bill"></i>
+                    <span>Transactions</span>
+                </a>
+            </li>
+
 
 
             <!-- Divider -->
