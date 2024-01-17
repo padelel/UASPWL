@@ -102,8 +102,9 @@
                             <label for="">Select Payment Mode</label>
                             <select id="payment_mode" class="form-select">
                                 <option value="">-- Select Payment --</option>
-                                <option value="Cash Payment">Cash Payment</option>
-                                <option value="Online Payment">Online Payment</option>
+                                <option value="Cash">Cash Payment</option>
+                                <option value="QRIS">QRIS</option>
+                                <option value="Credit Card">Credit Card</option>
                             </select>
                         </div>
                         <div class="col-md-4">
@@ -118,7 +119,7 @@
                 </div>
             <?php
             } else {
-                echo '<h5>No Items addes</h5>';
+                echo '<h5>No Items added</h5>';
             }
             ?>
         </div>

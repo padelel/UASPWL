@@ -47,12 +47,6 @@ include('includes/header.php');
                                     </label>
                                     <br />
                                 </div>
-                                <div class="col-md-6">
-                                    <h4>Customer</h4>
-                                    <label class="mb-1">
-                                        Customer Name: <span class="fw-bold"><?= $orderData['customer_name']; ?></span>
-                                    </label>
-                                </div>
                             </div>
                         </div>
 
