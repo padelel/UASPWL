@@ -13,7 +13,7 @@ $currentPage = isset($_GET['page']) ? $_GET['page'] : 1;
 $currentPage = max(1, min($currentPage, $totalPages));
 
 $startRow = ($currentPage - 1) * $rowsPerPage;
-$endRow = min($startRow + $rowsPerPage, $totalRows);
+$endRow = min($startRow + $rowsPerPage - 1, $totalRows - 1);
 ?>
 
 <div class="container-fluid px-4">
@@ -40,7 +40,7 @@ $endRow = min($startRow + $rowsPerPage, $totalRows);
             if ($totalRows > 0) {
             ?>
             <div class="table-responsive">
-                <table class="table table-stripped table-bordered">
+                <table class="table table-striped table-bordered">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -55,21 +55,25 @@ $endRow = min($startRow + $rowsPerPage, $totalRows);
                     <tbody>
                         <?php
                         $index = $startRow + 1;
-                        while ($Item = mysqli_fetch_assoc($products)) { ?>
-                            <tr>
-                                <td><?php echo $Item['id']; ?></td>
-                                <td><?php echo $Item['category_name']; ?></td>
-                                <td><?php echo $Item['name']; ?></td>
-                                <td><?php echo $Item['description']; ?></td>
-                                <td><?php echo $Item['price']; ?></td>
-                                <td><?php echo $Item['quantity']; ?></td>
-                                <td>
-                                    <a href="products-edit.php?id=<?php echo $Item['id']; ?>" class="btn btn-warning btn-sm">Edit</a>
-                                    <a href="products-delete.php?id=<?php echo $Item['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure want to delete this data.')">Delete</a>
-                                </td>
-                            </tr>
-                        <?php
-                            $index++;
+                        while ($Item = mysqli_fetch_assoc($products)) {
+                            // Pastikan $Item adalah array yang valid sebelum mengakses elemennya
+                            if (is_array($Item) && $index <= $endRow) {
+                                ?>
+                                <tr>
+                                    <td><?php echo $Item['id']; ?></td>
+                                    <td><?php echo $Item['category_name']; ?></td>
+                                    <td><?php echo $Item['name']; ?></td>
+                                    <td><?php echo $Item['description']; ?></td>
+                                    <td><?php echo $Item['price']; ?></td>
+                                    <td><?php echo $Item['quantity']; ?></td>
+                                    <td>
+                                        <a href="products-edit.php?id=<?php echo $Item['id']; ?>" class="btn btn-warning btn-sm">Edit</a>
+                                        <a href="products-delete.php?id=<?php echo $Item['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure want to delete this data.')">Delete</a>
+                                    </td>
+                                </tr>
+                                <?php
+                                $index++;
+                            }
                         }
                         ?>
                     </tbody>
@@ -90,9 +94,9 @@ $endRow = min($startRow + $rowsPerPage, $totalRows);
                         </li>
                     <?php endfor; ?>
 
-                    <?php if($currentPage < $totalPages) : ?>
+                    <?php if ($currentPage < $totalPages) : ?>
                         <li class="page-item">
-                            <a class="page-link" href="?search=<?php echo urlencode($search); ?>&page=<?php echo $currentPage + 1; ?>">Next</a</li>
+                            <a class="page-link" href="?search=<?php echo urlencode($search); ?>&page=<?php echo $currentPage + 1; ?>">Next</a></li>
                     <?php endif; ?>
                 </ul>
             </nav>
