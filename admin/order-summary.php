@@ -1,5 +1,4 @@
 <?php
-session_start();
 include('includes/header.php');
 if (!isset($_SESSION['productItems'])) {
     echo '<script> window.location.href = "order-create.php"; </script>';
@@ -41,9 +40,9 @@ $invoiceNumber = isset($_SESSION['invoice_number']) ? $_SESSION['invoice_number'
                             <tbody>
                                 <tr>
                                     <td style="text-align:center;" colspan="2">
-                                        <h4 style="font-size: 23px; line-height: 30px; margin:2px; padding: 0;">IVASTA</h4>
-                                        <p style="font-size: 16px; line-height: 24px; margin:2px; padding: 0;">Jl.Ivander No.13, Kec.Rumah, Jakarta Tenggara</p>
-                                        <p style="font-size: 16px; line-height: 24px; margin:2px; padding: 0;">Ivasta put Itd.</p>
+                                        <h4 style="font-size: 23px; line-height: 30px; margin:2px; padding: 0;">Velkh Store</h4>
+                                        <p style="font-size: 16px; line-height: 24px; margin:2px; padding: 0;">Jl.Sesame Street No.13, Kec.Bikini Bottom, Konohagakure</p>
+                                        <p style="font-size: 16px; line-height: 24px; margin:2px; padding: 0;">Velkhana Group.</p>
                                     </td>
                                 </tr>
                                 <tr>
