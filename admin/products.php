@@ -1,4 +1,6 @@
-<?php include('includes/header.php');
+<?php require 'includes/header.php'; ?>
+
+<?php
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 $whereClause = empty($search) ? '' : "WHERE products.name LIKE '%$search%' OR categories.name LIKE '%$search%'";
 
@@ -6,14 +8,21 @@ $query = "SELECT products.*, categories.name AS category_name FROM products JOIN
 $products = mysqli_query($conn, $query);
 
 $totalRows = mysqli_num_rows($products);
-$rowsPerPage = 5; // Number of rows to display per page
+$rowsPerPage = 3; // Ubah ke 3 untuk menampilkan 3 produk per halaman
 $totalPages = ceil($totalRows / $rowsPerPage);
 
 $currentPage = isset($_GET['page']) ? $_GET['page'] : 1;
 $currentPage = max(1, min($currentPage, $totalPages));
 
+// Calculate start and end rows for pagination
 $startRow = ($currentPage - 1) * $rowsPerPage;
-$endRow = min($startRow + $rowsPerPage - 1, $totalRows - 1);
+$endRow = $startRow + $rowsPerPage;
+
+// Ensure end row doesn't exceed the total number of rows
+$endRow = min($endRow, $totalRows);
+
+// Adjust start row if it exceeds the total number of rows
+$startRow = max(0, $startRow);
 ?>
 
 <div class="container-fluid px-4">
@@ -36,28 +45,30 @@ $endRow = min($startRow + $rowsPerPage - 1, $totalRows - 1);
                 </div>
             </form>
 
-            <?php 
+            <?php
             if ($totalRows > 0) {
-            ?>
-            <div class="table-responsive">
-                <table class="table table-striped table-bordered">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Category Name</th>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th>Price</th>
-                            <th>Quantity</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                ?>
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Category Name</th>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                         <?php
-                        $index = $startRow + 1;
-                        while ($Item = mysqli_fetch_assoc($products)) {
-                            // Pastikan $Item adalah array yang valid sebelum mengakses elemennya
-                            if (is_array($Item) && $index <= $endRow) {
+                            // Fetch all rows at once
+                            $rows = mysqli_fetch_all($products, MYSQLI_ASSOC);
+
+                            // Display rows based on the corrected start and end rows
+                            for ($i = $startRow; $i < $endRow && $i < $totalRows; $i++) {
+                                $Item = $rows[$i];
                                 ?>
                                 <tr>
                                     <td><?php echo $Item['id']; ?></td>
@@ -72,35 +83,33 @@ $endRow = min($startRow + $rowsPerPage - 1, $totalRows - 1);
                                     </td>
                                 </tr>
                                 <?php
-                                $index++;
                             }
-                        }
-                        ?>
-                    </tbody>
-                </table>
-            </div>
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
 
-            <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center">
-                    <?php if ($currentPage > 1) : ?>
-                        <li class="page-item">
-                            <a class="page-link" href="?search=<?php echo urlencode($search); ?>&page=<?php echo $currentPage - 1; ?>">Previous</a>
-                        </li>
-                    <?php endif; ?>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <?php if ($currentPage > 1) : ?>
+                            <li class="page-item">
+                                <a class="page-link" href="?search=<?php echo urlencode($search); ?>&page=<?php echo $currentPage - 1; ?>">Previous</a>
+                            </li>
+                        <?php endif; ?>
 
-                    <?php for ($i = 1; $i <= $totalPages; $i++) : ?>
-                        <li class="page-item <?php echo $i === $currentPage ? 'active' : ''; ?>">
-                            <a class="page-link" href="?search=<?php echo urlencode($search); ?>&page=<?php echo $i; ?>"><?php echo $i; ?></a>
-                        </li>
-                    <?php endfor; ?>
+                        <?php for ($i = 1; $i <= $totalPages; $i++) : ?>
+                            <li class="page-item <?php echo $i === $currentPage ? 'active' : ''; ?>">
+                                <a class="page-link" href="?search=<?php echo urlencode($search); ?>&page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                            </li>
+                        <?php endfor; ?>
 
-                    <?php if ($currentPage < $totalPages) : ?>
-                        <li class="page-item">
-                            <a class="page-link" href="?search=<?php echo urlencode($search); ?>&page=<?php echo $currentPage + 1; ?>">Next</a></li>
-                    <?php endif; ?>
-                </ul>
-            </nav>
-            <?php 
+                        <?php if ($currentPage < $totalPages) : ?>
+                            <li class="page-item">
+                                <a class="page-link" href="?search=<?php echo urlencode($search); ?>&page=<?php echo $currentPage + 1; ?>">Next</a></li>
+                        <?php endif; ?>
+                    </ul>
+                </nav>
+            <?php
             } else {
                 echo '<div class="alert alert-info">No products found.</div>';
             }
